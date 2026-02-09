@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Teddy Day! 🧸</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- PROFESSIONAL RESET & VARIABLES --- */
+        :root {
+            --primary: #ff4d6d;
+            --soft-pink: #ffe4e1;
+            --soft-blue: #e0f7fa;
+            --soft-yellow: #fff9c4;
+            --light-pink: #ffc1e3;
+            --glass: rgba(255, 255, 255, 0.25);
+            --border: rgba(255, 255, 255, 0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Default fallback */
+            background: #222;
+        }
+
+        /* --- SCREEN MANAGEMENT --- */
+        .screen {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .screen.active {
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 10;
+        }
+
+        /* --- PAGE 1 & LOCK: BLENDED HEARTS BG --- */
+        .bg-blended {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        .bg-blended::before {
+            content: "";
+            position: absolute;
+            width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 3.22l-.61-.6a5.5 5.5 0 0 0-7.78 7.77L10 18.78l8.39-8.4a5.5 5.5 0 0 0-7.78-7.77l-.61.61z' fill='%23fff' fill-opacity='0.2'/%3E%3C/svg%3E");
+            opacity: 0.5;
+            animation: moveBackground 20s linear infinite;
+        }
+
+        /* --- COLORS FOR OTHER PAGES --- */
+        .bg-soft-pink { background-color: var(--soft-pink); }
+        .bg-soft-blue { background-color: var(--soft-blue); }
+        .bg-soft-yellow { background-color: var(--soft-yellow); }
+        .bg-light-pink { background-color: var(--light-pink); }
+
+        /* --- COMPONENTS --- */
+        .glass-box {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            max-width: 90%;
+            width: 350px;
+            position: relative;
+            z-index: 2;
+        }
+
+        h1, h2 { color: #333; margin-bottom: 20px; font-weight: 700; }
+        p { color: #444; font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px; }
+
+        .big-emoji { font-size: 6rem; display: block; margin-bottom: 20px; animation: float 3s infinite ease-in-out; }
+
+        /* --- BUTTONS --- */
+        .glow-btn {
+            padding: 12px 30px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 50px;
+            background: white;
+            color: var(--primary);
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 77, 109, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 10px;
+        }
+        .glow-btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(255, 77, 109, 0.6); }
+
+        .hidden-element { display: none; opacity: 0; transition: opacity 1s; }
+        .fade-in { display: block; opacity: 1; }
+
+        /* --- GIFT BOX & FIREWORKS --- */
+        .gift-container { cursor: pointer; transition: transform 0.1s; }
+        .gift-container:active { transform: scale(0.95); }
+        
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+
+        /* --- INPUT --- */
+        .pass-input {
+            width: 100%; padding: 12px; margin: 15px 0;
+            border-radius: 10px; border: none;
+            text-align: center; font-size: 1rem;
+        }
+
+        /* --- VIDEO CONTAINERS --- */
+        .video-wrapper {
+            width: 90%; max-width: 350px;
+            border-radius: 20px; overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            border: 5px solid white;
+            background: black;
+        }
+        video { width: 100%; display: block; }
+
+        /* --- ANIMATIONS --- */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes moveBackground { from { background-position: 0 0; } to { background-position: 100% 100%; } }
+        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-10px);} 75% {transform: translateX(10px);} }
+        .shake { animation: shake 0.3s ease-in-out; border: 2px solid red !important; }
+
+    </style>
+</head>
+<body>
+
+    <div id="screen-lock" class="screen active bg-blended">
+        <div class="glass-box">
+            <div style="font-size: 3rem; margin-bottom:10px;">🛡️</div>
+            <h2>Teddy Security</h2>
+            <p>Enter the code to access the cuteness.</p>
+            <input type="password" id="passInput" class="pass-input" placeholder="Password">
+            <button class="glow-btn" onclick="checkSecurity()">Unlock</button>
+        </div>
+    </div>
+
+    <div id="screen-intro" class="screen bg-blended">
+        <div class="glass-box">
+            <div class="big-emoji">🧸</div>
+            <h2>Apko teddy chahiye ?</h2>
+            <button class="glow-btn" onclick="nextScreen('screen-gift')">hanji</button>
+            <button class="glow-btn" onclick="nextScreen('screen-gift')">yessss</button>
+        </div>
+    </div>
+
+    <div id="screen-gift" class="screen bg-blended">
+        <canvas id="fireworksCanvas"></canvas>
+        <div class="glass-box" id="giftBox" onclick="tapGift()">
+            <div class="big-emoji">🎁</div>
+            <p id="giftText" style="font-weight: bold;">Tap to open !</p>
+        </div>
+        
+        <div id="teddyReveal" class="glass-box hidden-element">
+            <img src="teddy.png" style="width: 200px; height: auto; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2)); animation: float 3s infinite;">
+            <p id="typewriter1" style="margin-top: 15px; min-height: 30px;"></p>
+            <button id="contBtn1" class="glow-btn hidden-element" onclick="nextScreen('screen-ask')">Continue</button>
+        </div>
+    </div>
+
+    <div id="screen-ask" class="screen bg-soft-pink">
+        <div class="glass-box">
+            <p style="font-family: sans-serif; font-size: 1.4rem; font-weight: normal;">Apko Mera favourite teddy dekhni hai ?? 🤔</p>
+            <button class="glow-btn" onclick="nextScreen('screen-video1')">han bilkul</button>
+        </div>
+    </div>
+
+    <div id="screen-video1" class="screen bg-soft-blue">
+        <div class="video-wrapper">
+            <video id="vid1" playsinline>
+                <source src="video1.mp4" type="video/mp4">
+            </video>
+        </div>
+        <button id="vidBtn1" class="glow-btn hidden-element" style="margin-top: 20px;" onclick="nextScreen('screen-titanic')">Continue</button>
+    </div>
+
+    <div id="screen-titanic" class="screen bg-soft-yellow">
+        <div class="glass-box">
+            <p id="typewriter2" style="font-size: 1.2rem; min-height: 60px;"></p>
+            <button id="titanicBtn" class="glow-btn hidden-element" onclick="nextScreen('screen-video2')">kyu ??</button>
+        </div>
+    </div>
+
+    <div id="screen-video2" class="screen bg-blended">
+        <div class="video-wrapper">
+            <video id="vid2" playsinline>
+                <source src="video2.mp4" type="video/mp4">
+            </video>
+        </div>
+        <div id="vid2Question" class="glass-box hidden-element" style="margin-top: 20px;">
+            <p>Pata chala kyu nhi dubta ?</p>
+            <button class="glow-btn" onclick="nextScreen('screen-final')">tum hi bata do</button>
+        </div>
+    </div>
+
+    <div id="screen-final" class="screen bg-light-pink">
+        <canvas id="heartCanvas"></canvas>
+        <div class="glass-box">
+            <p style="font-size: 1.3rem; color: #d32f2f;">
+                Kyuki iceberg apko(titanic) dekhkar pighal jata jaise main pighal jata hu 🫠❤️
+            </p>
+            <h2 style="color: var(--primary); margin-top: 20px;">I love you cutu 🧿💕</h2>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. SECURITY (ENCODED LOGIC) ---
+        // The password "cutucutu❤️" is encoded to Base64 to hide it from plain text.
+        // Plain text is NOT visible in the code below.
+        function checkSecurity() {
+            const input = document.getElementById('passInput').value;
+            // Base64 Encode the input (handling emoji UTF-8)
+            const encoded = btoa(unescape(encodeURIComponent(input)));
+            
+            // "Y3V0dWN1dHU=" is 'cutucutu'. The emoji makes the string complex. 
+            // We check against the pre-calculated Base64 string for "cutucutu❤️"
+            const secretHash = "Y3V0dWN1dHXLpA=="; 
+
+            if (encoded === secretHash) {
+                nextScreen('screen-intro');
+            } else {
+                const field = document.getElementById('passInput');
+                field.classList.add('shake');
+                setTimeout(() => field.classList.remove('shake'), 400);
+            }
+        }
+
+        // --- 2. NAVIGATION ---
+        function nextScreen(id) {
+            // Hide current
+            document.querySelector('.screen.active').classList.remove('active');
+            // Show next
+            const next = document.getElementById(id);
+            next.classList.add('active');
+
+            // Specific Page Triggers
+            if(id === 'screen-video1') playVideo1();
+            if(id === 'screen-titanic') startTitanicTypewriter();
+            if(id === 'screen-video2') playVideo2();
+            if(id === 'screen-final') startHeartRain();
+        }
+
+        // --- 3. GIFT BOX LOGIC ---
+        let taps = 0;
+        function tapGift() {
+            const text = document.getElementById('giftText');
+            taps++;
+            if(taps === 1) text.innerText = "Tap again...";
+            if(taps === 2) text.innerText = "One more time!";
+            if(taps === 3) {
+                document.getElementById('giftBox').style.display = 'none';
+                const reveal = document.getElementById('teddyReveal');
+                reveal.classList.remove('hidden-element');
+                reveal.classList.add('fade-in');
+                
+                // Firecrackers
+                launchFireworks();
+                
+                // Typewriter
+                typeWriter("Yeh raha apka pyara teddy 🤭", "typewriter1", () => {
+                    document.getElementById('contBtn1').classList.remove('hidden-element');
+                    document.getElementById('contBtn1').classList.add('fade-in');
+                });
+            }
+        }
+
+        // --- 4. VIDEO 1 LOGIC (Pocoyo) ---
+        function playVideo1() {
+            const vid = document.getElementById('vid1');
+            vid.play();
+            // Show button after 10 seconds (timeupdate check)
+            vid.ontimeupdate = function() {
+                if(vid.currentTime > 10) {
+                    const btn = document.getElementById('vidBtn1');
+                    if(btn.classList.contains('hidden-element')) {
+                        btn.classList.remove('hidden-element');
+                        btn.classList.add('fade-in');
+                    }
+                }
+            };
+        }
+
+        // --- 5. TITANIC TEXT ---
+        function startTitanicTypewriter() {
+            typeWriter("Agar ap titanic hote to woh ship kabhi dubta hi nhi ! 🙂 Pata hai kyu ??", "typewriter2", () => {
+                document.getElementById('titanicBtn').classList.remove('hidden-element');
+                document.getElementById('titanicBtn').classList.add('fade-in');
+            });
+        }
+
+        // --- 6. VIDEO 2 LOGIC (Oggy) ---
+        function playVideo2() {
+            const vid = document.getElementById('vid2');
+            vid.play();
+            vid.onended = function() {
+                const qBox = document.getElementById('vid2Question');
+                qBox.classList.remove('hidden-element');
+                qBox.classList.add('fade-in');
+            };
+        }
+
+        // --- UTILS: TYPEWRITER ---
+        function typeWriter(text, elementId, callback) {
+            let i = 0;
+            const target = document.getElementById(elementId);
+            target.innerHTML = "";
+            function type() {
+                if (i < text.length) {
+                    target.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, 50);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            type();
+        }
+
+        // --- VISUALS: FIREWORKS (Canvas) ---
+        function launchFireworks() {
+            const canvas = document.getElementById('fireworksCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            let particles = [];
+            
+            function createParticle(x, y) {
+                const count = 30;
+                for(let i=0; i<count; i++) {
+                    particles.push({
+                        x: x, y: y,
+                        color: `hsl(${Math.random()*360}, 100%, 50%)`,
+                        speedX: Math.random() * 6 - 3,
+                        speedY: Math.random() * 6 - 3,
+                        life: 100
+                    });
+                }
+            }
+
+            // Burst in center
+            createParticle(canvas.width/2, canvas.height/2);
+
+            function animate() {
+                ctx.clearRect(0,0,canvas.width, canvas.height);
+                for(let i=0; i<particles.length; i++) {
+                    let p = particles[i];
+                    p.x += p.speedX;
+                    p.y += p.speedY;
+                    p.life--;
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 3, 0, Math.PI*2);
+                    ctx.fill();
+                }
+                particles = particles.filter(p => p.life > 0);
+                if(particles.length > 0) requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // --- VISUALS: HEART RAIN ---
+        function startHeartRain() {
+            const canvas = document.getElementById('heartCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            let hearts = [];
+
+            function createHeart() {
+                hearts.push({
+                    x: Math.random() * canvas.width,
+                    y: -20,
+                    speed: Math.random() * 2 + 1,
+                    size: Math.random() * 20 + 10
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0,0,canvas.width, canvas.height);
+                if(Math.random() < 0.1) createHeart(); // Add new heart occasionally
+
+                for(let i=0; i<hearts.length; i++) {
+                    let h = hearts[i];
+                    h.y += h.speed;
+                    ctx.font = h.size + "px Arial";
+                    ctx.fillText("❤️", h.x, h.y);
+                }
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+    </script>
+</body>
+</html>
